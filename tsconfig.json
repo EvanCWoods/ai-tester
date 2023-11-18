@@ -1,0 +1,19 @@
+{
+	"compilerOptions": {
+		"target": "es6", // Specify ECMAScript target version
+		"module": "commonjs", // Specify module code generation
+		"outDir": "./bin", // Redirect output structure to the directory
+		"rootDir": "./src", // Specify the root directory of input files
+		"strict": true, // Enable all strict type-checking options
+		"esModuleInterop": true, // Enable module interop compatibility
+		"skipLibCheck": true, // Skip type checking of declaration files
+		"forceConsistentCasingInFileNames": true // Disallow inconsistently-cased references
+	},
+	"include": [
+		"src/**/*.ts" // Include all TypeScript files in src and sub-directories
+	],
+	"exclude": [
+		"node_modules", // Exclude the node_modules directory
+		"**/*.test.ts" // Exclude test files
+	]
+}
