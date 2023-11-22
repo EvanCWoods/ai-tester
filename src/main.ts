@@ -5,7 +5,7 @@ import { openAIService } from "./openAiService";
 import { getUserInput } from "./getUserInput";
 import findTestCommand from "./findTestCommand";
 
-const main = async (): Promise<void> => {
+export const main = async (): Promise<void> => {
 	const { frontendDir, backendDir, openAiApiKey, openAiOrg } =
 		await getUserInput();
 	const { frontendTestCommand, backendTestCommand } = findTestCommand(
@@ -30,7 +30,9 @@ const main = async (): Promise<void> => {
 	if (tsFiles.length > 0) {
 		for (const file of tsFiles) {
 			const fileContent = file.content;
-			console.log(`Sending content of the ${file.filePath} file to OpenAI...`);
+			console.log(
+				`Sending content of the ${file.filePath} file to OpenAI...\n\n`,
+			);
 
 			// Determine the test command based on the file path
 			const testCommand = file.filePath.includes("/client/")
@@ -38,7 +40,22 @@ const main = async (): Promise<void> => {
 				: backendTestCommand;
 
 			const response = await openAIService(
-				`Please write a test suite in TypeScript for the following component with the ${testCommand} test command. Only return the code, not any explanations or markdown. Here is the component code:\n\n${fileContent}`,
+				`
+				Assume the role of a Senior Software Engineer specializing in MERN, TypeScript. Your task is to assist in creating simple unit tests using jest for a specific component in a software project. 
+
+				The testing needs are as follows:
+				1. Write a comprehensive test suite in TypeScript using Jest.
+				2. Focus on testing all functionalities of the given component.
+				3. Include tests for common edge cases and potential error scenarios.
+				4. Ensure that the tests are designed to be easily understandable and maintainable.
+				5. Use the ${testCommand} command to run these tests.
+				
+				Please generate the test suite based on the provided component code, ensuring coverage for all critical aspects of the component's functionality. Avoid including any explanations or comments outside the scope of the test code itself.
+				
+				Here is the component code for which the test suite is required:
+			
+				${fileContent}
+				`,
 				openAiApiKey,
 				openAiOrg,
 			);

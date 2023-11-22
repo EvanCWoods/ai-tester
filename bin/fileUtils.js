@@ -28,7 +28,11 @@ exports.findTypescriptFiles = findTypescriptFiles;
 const getTestFilePath = (filePath, rootDir) => {
     // Assuming all your TS/TSX files are under the rootDir (e.g., ./client)
     const relativePath = path_1.default.relative(rootDir, filePath);
-    const testFileName = relativePath.replace(/\.(tsx|ts)$/, ".test.ts");
+    // Replace the file extension with .test.ts or .test.tsx accordingly
+    const testFileExtension = filePath.endsWith(".tsx")
+        ? ".test.tsx"
+        : ".test.ts";
+    const testFileName = relativePath.replace(/\.(tsx|ts)$/, testFileExtension);
     // Assuming you want to place your tests under ./client/__tests__
     return path_1.default.join(rootDir, "__tests__", testFileName);
 };

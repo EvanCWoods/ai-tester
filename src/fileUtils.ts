@@ -1,15 +1,11 @@
 import fs from "fs";
 import path from "path";
-
-interface FileData {
-	filePath: string;
-	content: string;
-}
+import { IFileData } from "./types/interfaces";
 
 export const findTypescriptFiles = (
 	dir: string,
-	filelist: FileData[] = [],
-): FileData[] => {
+	filelist: IFileData[] = [],
+): IFileData[] => {
 	if (dir.includes("node_modules") || dir.includes("__tests__")) {
 		return filelist;
 	}
@@ -34,7 +30,12 @@ export const findTypescriptFiles = (
 export const getTestFilePath = (filePath: string, rootDir: string): string => {
 	// Assuming all your TS/TSX files are under the rootDir (e.g., ./client)
 	const relativePath = path.relative(rootDir, filePath);
-	const testFileName = relativePath.replace(/\.(tsx|ts)$/, ".test.ts");
+
+	// Replace the file extension with .test.ts or .test.tsx accordingly
+	const testFileExtension = filePath.endsWith(".tsx")
+		? ".test.tsx"
+		: ".test.ts";
+	const testFileName = relativePath.replace(/\.(tsx|ts)$/, testFileExtension);
 
 	// Assuming you want to place your tests under ./client/__tests__
 	return path.join(rootDir, "__tests__", testFileName);
@@ -46,7 +47,7 @@ export const writeTestFile = (
 	rootDir: string,
 ): void => {
 	const testFilePath = getTestFilePath(filePath, rootDir);
-	console.log(`Writing test file to ${testFilePath}`);
+	console.log(`Writing test file to ${testFilePath}\n\n`);
 	fs.mkdirSync(path.dirname(testFilePath), { recursive: true });
 	fs.writeFileSync(testFilePath, content);
 };

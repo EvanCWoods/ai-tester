@@ -1,16 +1,12 @@
 import fs from "fs";
 import path from "path";
-
-interface TestCommandResult {
-	frontendTestCommand: string | null;
-	backendTestCommand: string | null;
-}
+import { ITestCommandResult } from "./types/interfaces";
 
 function findTestCommand(
 	frontendPath: string,
 	backendPath: string,
-): TestCommandResult {
-	const testCommands: TestCommandResult = {
+): ITestCommandResult {
+	const testCommands: ITestCommandResult = {
 		frontendTestCommand: null,
 		backendTestCommand: null,
 	};
