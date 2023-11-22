@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -8,7 +7,7 @@ exports.writeTestFile = exports.getTestFilePath = exports.findTypescriptFiles = 
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const findTypescriptFiles = (dir, filelist = []) => {
-    if (dir.includes("node_modules")) {
+    if (dir.includes("node_modules") || dir.includes("__tests__")) {
         return filelist;
     }
     const files = fs_1.default.readdirSync(dir);
@@ -26,16 +25,17 @@ const findTypescriptFiles = (dir, filelist = []) => {
     return filelist;
 };
 exports.findTypescriptFiles = findTypescriptFiles;
-const getTestFilePath = (filePath) => {
-    const dirPath = path_1.default.dirname(filePath);
-    const fileName = path_1.default.basename(filePath);
-    const testFileName = fileName.replace(/\.(tsx|ts)$/, ".test.ts");
-    const testDirPath = path_1.default.join(dirPath, "__tests__");
-    return path_1.default.join(testDirPath, testFileName);
+const getTestFilePath = (filePath, rootDir) => {
+    // Assuming all your TS/TSX files are under the rootDir (e.g., ./client)
+    const relativePath = path_1.default.relative(rootDir, filePath);
+    const testFileName = relativePath.replace(/\.(tsx|ts)$/, ".test.ts");
+    // Assuming you want to place your tests under ./client/__tests__
+    return path_1.default.join(rootDir, "__tests__", testFileName);
 };
 exports.getTestFilePath = getTestFilePath;
-const writeTestFile = (filePath, content) => {
-    const testFilePath = (0, exports.getTestFilePath)(filePath);
+const writeTestFile = (filePath, content, rootDir) => {
+    const testFilePath = (0, exports.getTestFilePath)(filePath, rootDir);
+    console.log(`Writing test file to ${testFilePath}`);
     fs_1.default.mkdirSync(path_1.default.dirname(testFilePath), { recursive: true });
     fs_1.default.writeFileSync(testFilePath, content);
 };

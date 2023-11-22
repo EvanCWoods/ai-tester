@@ -1,11 +1,13 @@
 // getUserInput.ts
-const inquirer = require("inquirer");
+import inquirer from "inquirer";
 import fs from "fs";
 import path from "path";
 
 interface UserInput {
 	frontendDir: string;
 	backendDir: string;
+	openAiApiKey: string;
+	openAiOrg: string;
 }
 
 const getDirectories = (source: string) =>
@@ -31,10 +33,25 @@ export const getUserInput = async (): Promise<UserInput> => {
 			message: "Select your backend directory:",
 			choices: directories,
 		},
+		{
+			type: "input",
+			name: "openAiApiKey",
+			message: "Enter your OpenAI API Key:",
+			validate: (input) => input.length > 0 || "API Key cannot be empty.",
+		},
+		{
+			type: "input",
+			name: "openAiOrg",
+			message: "Enter your OpenAI Organization ID:",
+			validate: (input) =>
+				input.length > 0 || "Organization ID cannot be empty.",
+		},
 	]);
 
 	return {
 		frontendDir: answers.frontendDir,
 		backendDir: answers.backendDir,
+		openAiApiKey: answers.openAiApiKey,
+		openAiOrg: answers.openAiOrg,
 	};
 };

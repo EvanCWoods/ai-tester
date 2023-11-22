@@ -1,9 +1,14 @@
 #!/usr/bin/env node
 import { OpenAIApi } from "openai";
-import { configuration } from "./constants";
+import { openAIConfiguration } from "./constants";
 
-export const openAIService = async (prompt: string): Promise<string> => {
-	const openai = new OpenAIApi(configuration);
+export const openAIService = async (
+	prompt: string,
+	apiKey: string,
+	org: string,
+): Promise<string> => {
+	const config = await openAIConfiguration(apiKey, org);
+	const openai = new OpenAIApi(config);
 	const completion = await openai.createChatCompletion({
 		model: "gpt-4-1106-preview",
 		messages: [

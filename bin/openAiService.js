@@ -4,8 +4,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.openAIService = void 0;
 const openai_1 = require("openai");
 const constants_1 = require("./constants");
-const openAIService = async (prompt) => {
-    const openai = new openai_1.OpenAIApi(constants_1.configuration);
+const openAIService = async (prompt, apiKey, org) => {
+    const config = await (0, constants_1.openAIConfiguration)(apiKey, org);
+    const openai = new openai_1.OpenAIApi(config);
     const completion = await openai.createChatCompletion({
         model: "gpt-4-1106-preview",
         messages: [
