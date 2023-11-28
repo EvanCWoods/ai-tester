@@ -27,8 +27,8 @@ export const findTypescriptFiles = (
 	return filelist;
 };
 
-export const getTestFilePath = (filePath: string, rootDir: string): string => {
-	// Assuming all your TS/TSX files are under the rootDir (e.g., ./client)
+export const getTestFilePath = (filePath, rootDir, isSpecificFolder) => {
+	// Extract the part of the filePath that is relative to the root directory
 	const relativePath = path.relative(rootDir, filePath);
 
 	// Replace the file extension with .test.ts or .test.tsx accordingly
@@ -37,16 +37,19 @@ export const getTestFilePath = (filePath: string, rootDir: string): string => {
 		: ".test.ts";
 	const testFileName = relativePath.replace(/\.(tsx|ts)$/, testFileExtension);
 
-	// Assuming you want to place your tests under ./client/__tests__
+	// If working with specific folders, adjust the path to place the __tests__ folder correctly
+	if (isSpecificFolder) {
+		const parts = relativePath.split(path.sep);
+		parts.splice(1, 0, "__tests__"); // Insert '__tests__' after the first directory
+		return path.join(rootDir, ...parts);
+	}
+
+	// If not working with specific folders, use the existing logic
 	return path.join(rootDir, "__tests__", testFileName);
 };
 
-export const writeTestFile = (
-	filePath: string,
-	content: string,
-	rootDir: string,
-): void => {
-	const testFilePath = getTestFilePath(filePath, rootDir);
+export const writeTestFile = (filePath, content, rootDir, isSpecificFolder) => {
+	const testFilePath = getTestFilePath(filePath, rootDir, isSpecificFolder);
 	console.log(`Writing test file to ${testFilePath}\n\n`);
 	fs.mkdirSync(path.dirname(testFilePath), { recursive: true });
 	fs.writeFileSync(testFilePath, content);
